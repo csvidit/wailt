@@ -8,14 +8,12 @@ import TopTracks from "./components/app-ui/wrapped/TopTracks";
 import Intro from "./components/app-ui/wrapped/Intro";
 import MainContent from "./components/containers/MainContent";
 
-interface PageProps {
-  searchParams: {
-    timeRange?: string;
-  };
-}
-
-export default async function Home({ searchParams }: PageProps) {
-  const timeRange = searchParams.timeRange || "medium_term";
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>
+}) {
+  const timeRange = (await searchParams).timeRange || "medium_term";
   const session = await auth();
 
   // Fetch data on the server side
@@ -26,7 +24,6 @@ export default async function Home({ searchParams }: PageProps) {
     topArtistsPromise,
     topTracksPromise,
   ]);
-
   return (
     <div className="flex flex-col min-h-screen py-2">
       {!session ? (
